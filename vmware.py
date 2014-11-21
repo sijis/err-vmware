@@ -83,7 +83,7 @@ class VMware(BotPlugin):
         Disconnect(si)
         return 'Migrating {0} to {1}'.format(vmname, hostname)
 
-    @botcmd(split_with_args=' ')
+    @botcmd(split_args_with=' ')
     def vmware_reboot_vm(self, msg, args):
         ''' reboot a virtual machine
             options:
