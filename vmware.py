@@ -100,7 +100,8 @@ class VMware(BotPlugin):
         except:
             err_text = 'Error connecting to {0}'.format(vcenter)
             logging.info(err_text)
-            return err_text
+            self.send(msg.getFrom(), err_text, message_type=msg.getType())
+            return
 
         # Finding source VM
         vmname = args.pop(0)
@@ -108,7 +109,9 @@ class VMware(BotPlugin):
         try:
             vm = vmutils.get_vm_by_name(si, vmname)
         except:
-            return '{0} not found.'.format(vmname)
+            err_text = '{0} virtual machine not found.'.format(vmname)
+            self.send(msg.getFrom(), err_text, message_type=msg.getType())
+            return
 
         try:
             vm.RebootGuest()
@@ -116,7 +119,7 @@ class VMware(BotPlugin):
             vm.ResetVM_Task()
 
         Disconnect(si)
-        return 'Rebooting {0}'.format(vmname)
+        self.send(msg.getFrom(), 'Reboot task for {0} sent successfully'.format(vmname), message_type=msg.getType())
 
 
     @botcmd
