@@ -183,7 +183,7 @@ class VMware(BotPlugin):
 
         # mem / cpu
         vmconf = vim.vm.ConfigSpec(numCPUs=data['cpu'], memoryMB=data['mem'],
-                                   annotation='Created by {0} on {1}'.format(msg.getFrom(), str(datetime.datetime.now())))
+                                   annotation='Created by {0} on {1}'.format(msg.getMuckNick(), str(datetime.datetime.now())))
 
         # Network adapter settings
         adaptermap = vim.vm.customization.AdapterMapping()
