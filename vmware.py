@@ -31,12 +31,11 @@ class VMware(BotPlugin):
         }
         return config
 
-
     @botcmd(split_args_with=' ')
     def vmware_migrate(self, msg, args):
         """ Vmotion vm to a specific esx host
         Example:
-            vmware migrate server1 esxhost2 
+            vmware migrate server1 esxhost2
         """
         username = self.config['user']
         password = self.config['pass']
@@ -168,7 +167,7 @@ class VMware(BotPlugin):
 
         try:
             si = SmartConnect(host=data['vcenter'], user=username, pwd=password, port=443)
-        except IOError, e:
+        except IOError:
             err_text = 'Error connecting to {0}'.format(data['vcenter'])
             logging.info(err_text)
             yield err_text
@@ -183,7 +182,7 @@ class VMware(BotPlugin):
 
         # mem / cpu
         vmconf = vim.vm.ConfigSpec(numCPUs=data['cpu'], memoryMB=data['mem'],
-                                   annotation='Created by {0} on {1}'.format(msg.getMuckNick(), str(datetime.datetime.now())))
+                                   annotation='Created by {0} on {1}'.format(msg.nick, str(datetime.datetime.now())))
 
         # Network adapter settings
         adaptermap = vim.vm.customization.AdapterMapping()
@@ -221,7 +220,7 @@ class VMware(BotPlugin):
         time.sleep(5)
         while True:
             progress = clone.info.progress
-            if progress == None:
+            if progress is None:
                 break
             time.sleep(2)
 
@@ -249,4 +248,3 @@ class VMware(BotPlugin):
             pid = vmutils.start_process(si=si, vm=vm_clone, auth=creds, program_path='/usr/bin/puppet', args='agent --test')
 
         self.send(msg.getFrom(), '{0}: [3/3] Request completed'.format(vmname), message_type=msg.getType())
-
