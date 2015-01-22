@@ -99,7 +99,7 @@ class VMware(BotPlugin):
         except:
             err_text = 'Error connecting to {0}'.format(vcenter)
             logging.info(err_text)
-            self.send(msg.getFrom(), err_text, message_type=msg.getType())
+            self.send(msg.frm, err_text, message_type=msg.type)
             return
 
         # Finding source VM
@@ -109,7 +109,7 @@ class VMware(BotPlugin):
             vm = vmutils.get_vm_by_name(si, vmname)
         except:
             err_text = '{0} virtual machine not found.'.format(vmname)
-            self.send(msg.getFrom(), err_text, message_type=msg.getType())
+            self.send(msg.frm, err_text, message_type=msg.type)
             return
 
         try:
@@ -118,7 +118,7 @@ class VMware(BotPlugin):
             vm.ResetVM_Task()
 
         Disconnect(si)
-        self.send(msg.getFrom(), 'Reboot task for {0} sent successfully'.format(vmname), message_type=msg.getType())
+        self.send(msg.frm, 'Reboot task for {0} sent successfully'.format(vmname), message_type=msg.type)
 
 
     @botcmd
@@ -214,7 +214,7 @@ class VMware(BotPlugin):
                                   folder=template_vm.parent,
                                   spec=cloneSpec)
 
-        self.send(msg.getFrom(), '{0}: [1/3] Cloning'.format(vmname), message_type=msg.getType())
+        self.send(msg.frm, '{0}: [1/3] Cloning'.format(vmname), message_type=msg.type)
 
         # Checking clone progress
         time.sleep(5)
@@ -233,7 +233,7 @@ class VMware(BotPlugin):
         # Credentials used to login to the guest system
         creds = vmutils.login_in_guest(username=vm_username, password=vm_password)
 
-        self.send(msg.getFrom(), '{0}: [2/3] Running post setup'.format(vmname), message_type=msg.getType())
+        self.send(msg.frm, '{0}: [2/3] Running post setup'.format(vmname), message_type=msg.type)
         pid = vmutils.start_process(si=si, vm=vm_clone, auth=creds, program_path='/bin/sed', args='-i "/^HOST/s:$:.{0}:" /etc/sysconfig/network'.format(data['dnsdomain']))
         #pid = vmutils.start_process(si=si, vm=vm_clone, auth=creds, program_path='/bin/sed', args='-i "/^127.0.1.1/d" /etc/hosts')
         pid = vmutils.start_process(si=si, vm=vm_clone, auth=creds, program_path='/sbin/reboot', args='')
@@ -247,4 +247,4 @@ class VMware(BotPlugin):
             pid = vmutils.start_process(si=si, vm=vm_clone, auth=creds, program_path='/bin/echo', args='$(A=$(facter ipaddress); B=$(facter hostname); C=${B}.{0}; echo $A $C $B >> /etc/hosts)'.format(data['dnsdomain']))
             pid = vmutils.start_process(si=si, vm=vm_clone, auth=creds, program_path='/usr/bin/puppet', args='agent --test')
 
-        self.send(msg.getFrom(), '{0}: [3/3] Request completed'.format(vmname), message_type=msg.getType())
+        self.send(msg.frm, '{0}: [3/3] Request completed'.format(vmname), message_type=msg.type)
