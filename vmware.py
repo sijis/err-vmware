@@ -12,7 +12,9 @@ import datetime
 import random
 import vmutils
 import logging
-logging.basicConfig(level=logging.DEBUG)
+
+log = logging.getLogger(name='errbot.plugins.VMware')
+
 
 class VMware(BotPlugin):
 
@@ -51,7 +53,7 @@ class VMware(BotPlugin):
             si = SmartConnect(host=vcenter, user=username, pwd=password, port=443)
         except:
             err_text = 'Error connecting to {0}'.format(vcenter)
-            logging.info(err_text)
+            log.info(err_text)
             self.send(msg.frm,
                       err_text,
                       message_type=msg.type,
@@ -117,7 +119,7 @@ class VMware(BotPlugin):
             si = SmartConnect(host=vcenter, user=username, pwd=password, port=443)
         except:
             err_text = 'Error connecting to {0}'.format(vcenter)
-            logging.info(err_text)
+            log.info(err_text)
             self.send(msg.frm,
                       err_text,
                       message_type=msg.type,
@@ -199,7 +201,7 @@ class VMware(BotPlugin):
             si = SmartConnect(host=data['vcenter'], user=username, pwd=password, port=443)
         except IOError:
             err_text = 'Error connecting to {0}'.format(data['vcenter'])
-            logging.info(err_text)
+            log.info(err_text)
             self.send(msg.frm,
                       err_text,
                       message_type=msg.type,
