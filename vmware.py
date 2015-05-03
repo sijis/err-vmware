@@ -52,14 +52,24 @@ class VMware(BotPlugin):
         except:
             err_text = 'Error connecting to {0}'.format(vcenter)
             logging.info(err_text)
-            return err_text
+            self.send(msg.frm,
+                      err_text,
+                      message_type=msg.type,
+                      in_reply_to=msg,
+                      groupchat_nick_reply=True)
+            return
 
         if hostname:
             try:
                 host = vmutils.get_host_by_name(si, hostname)
                 hostname = host.name
             except:
-                return '{0} not found'.format(hostname)
+                self.send(msg.frm,
+                          '{0} not found'.format(hostname),
+                          message_type=msg.type,
+                          in_reply_to=msg,
+                          groupchat_nick_reply=True)
+                return
         else:
             # hostname was not passed
             all_hosts = vmutils.get_hosts(si)
@@ -70,7 +80,12 @@ class VMware(BotPlugin):
         try:
             vm = vmutils.get_vm_by_name(si, vmname)
         except:
-            return '{0} not found.'.format(vmname)
+            self.send(msg.frm,
+                      '{0} not found.'.format(vmname),
+                      message_type=msg.type,
+                      in_reply_to=msg,
+                      groupchat_nick_reply=True)
+            return
 
         # relocate spec, to migrate to another host
         # this can do other things, like storage and resource pool
@@ -80,7 +95,11 @@ class VMware(BotPlugin):
         # does the actual migration to host
         vm.Relocate(relocate_spec)
         Disconnect(si)
-        return 'Migrating {0} to {1}'.format(vmname, hostname)
+        self.send(msg.frm,
+                  'Migrating {0} to {1}'.format(vmname, hostname),
+                  message_type=msg.type,
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)
 
     @botcmd(split_args_with=' ')
     def vmware_reboot_vm(self, msg, args):
