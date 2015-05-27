@@ -4,3 +4,6 @@ Module = vmware
 
 [Documentation]
 Description = VMware plugin to manage virtual machines and esx hosts in vsphere 5.x
+
+[Python]
+Version=2+
